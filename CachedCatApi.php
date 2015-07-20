@@ -1,7 +1,16 @@
 <?php
 
-class CachedCatApi
+include "CatApi.php";
+
+class CachedCatApi implements CatApi
 {
+	private $realCatApi;
+
+	public function __construct(CatApi $realCatApi)
+	{
+		$this->realCatApi = $realCatApi;
+	}
+
 	public function getRandomImage()
 	{
 		$cacheFilePath = __DIR__ . '/cache/random';
@@ -9,8 +18,7 @@ class CachedCatApi
 			|| time() - filemtime($cacheFilePath) > 3) {
 
 			// not in cache, so do the real thing
-			$realCatApi = new CatApi();
-			$url = $realCatApi->getRandomImage();
+			$url = $this->realCatApi->getRandomImage();
 
 			file_put_contents($cacheFilePath, $url);
 
