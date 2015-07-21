@@ -4,27 +4,33 @@ include "CatApi.php";
 
 class CachedCatApi implements CatApi
 {
+	/**
+	 * @var CatApi
+	 */
 	private $realCatApi;
 
-	public function __construct(CatApi $realCatApi)
+	/**
+	 * @var Cache
+	 */
+	private $cache;
+
+	public function __construct(CatApi $realCatApi, Cache $cache)
 	{
 		$this->realCatApi = $realCatApi;
+		$this->cache = $cache;
 	}
 
 	public function getRandomImage()
 	{
-		$cacheFilePath = __DIR__ . '/cache/random';
-		if (!file_exists($cacheFilePath)
-			|| time() - filemtime($cacheFilePath) > 3) {
-
+		if ( $this->cache->isNotFresh(3) ) {
 			// not in cache, so do the real thing
 			$url = $this->realCatApi->getRandomImage();
 
-			file_put_contents($cacheFilePath, $url);
+			$this->cache->put($url);
 
 			return $url;
 		}
 
-		return file_get_contents($cacheFilePath);
+		return $this->cache->get();
 	}
 }

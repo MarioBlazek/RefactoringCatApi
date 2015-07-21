@@ -21,9 +21,9 @@ class CachedCatApiTest extends \PHPUnit_Framework_TestCase
 		$cachedCatApi = new CachedCatApi($realCatApi);
 
 		$firstUrl = $cachedCatApi->getRandomImage();
-		sleep(2);
+
 		$secondUrl = $cachedCatApi->getRandomImage();
-		sleep(2);
+
 		$thirdUrl = $cachedCatApi->getRandomImage();
 
 		$this->assertSame($firstUrl, $secondUrl);

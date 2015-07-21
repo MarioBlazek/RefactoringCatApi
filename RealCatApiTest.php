@@ -44,7 +44,7 @@ EOD;
 			->expect($this->once())
 			->method('get')
 			->with('http://thecatapi.com/api/images/get?format=xml&type=jpg')
-			->will($this->throwException(new HttpRequestFailed());
+			->will($this->throwException(new HttpRequestFailed()));
 		$catApi = new RealCatApi($httpClient);
 
 		$url = $catApi->getRandomImage();
