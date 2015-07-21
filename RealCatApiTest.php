@@ -35,4 +35,23 @@ EOD;
 			$url
 		);
 	}
+
+	/** @test */
+	public function it_returns_a_default_url_when_the_http_request_fails()
+	{
+		$httpClient = $this->getMock('HttpClient');
+		$httpClient
+			->expect($this->once())
+			->method('get')
+			->with('http://thecatapi.com/api/images/get?format=xml&type=jpg')
+			->will($this->throwException(new HttpRequestFailed());
+		$catApi = new RealCatApi($httpClient);
+
+		$url = $catApi->getRandomImage();
+
+		$this->assertSame(
+			'http://cdn.my-cool-website.com/default.jpg',
+			$url
+		);
+	}
 }

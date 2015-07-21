@@ -17,9 +17,11 @@ class RealCatApi implements CatApi
 
 	public function getRandomImage()
 	{
-		$responseXml = $this->httpClient->get('http://thecatapi.com/api/images/get?format=xml&type=jpg');
-		if (!$responseXml) {
-			// the cat API is down or something
+		try {
+
+			$responseXml = $this->httpClient->get('http://thecatapi.com/api/images/get?format=xml&type=jpg');
+
+		} catch (HttpRequestFailed $exception) {
 			return 'http://cdn.my-cool-website.com/default.jpg';
 		}
 
