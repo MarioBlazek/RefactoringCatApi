@@ -7,10 +7,32 @@ class RealCatApiTest extends \PHPUnit_Framework_TestCase
 	/** @test */
 	public function it_fetches_a_random_url_of_a_cat_gif()
 	{
-		$catApi = new RealCatApi();
+		$xmlResponse = <<<EOD
+<response>
+    <data>
+        <images>
+            <image>
+                <url>http://24.media.tumblr.com/tumblr_lgg3m9tRY41qgnva2o1_500.jpg</url>
+                <id>bie</id>
+                <source_url>http://thecatapi.com/?id=bie</source_url>
+            </image>
+        </images>
+    </data>
+</response>
+EOD;
+		$httpClient = $this->getMock('HttpClient');
+		$httpClient
+			->expect($this->once())
+			->method('get')
+			->with('http://thecatapi.com/api/images/get?format=xml&type=jpg')
+			->will($this->returnValue($xmlResponse));
+		$catApi = new RealCatApi($httpClient);
 
 		$url = $catApi->getRandomImage();
 
-		$this->assertTrue(filter_var($url, FILTER_VALIDATE_URL) !== false);
+		$this->assertSame(
+			'http://24.media.tumblr.com/tumblr_lgg3m9tRY41qgnva2o1_500.jpg',
+			$url
+		);
 	}
 }
