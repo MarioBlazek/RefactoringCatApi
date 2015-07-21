@@ -4,9 +4,20 @@ include "CatApi.php";
 
 class RealCatApi implements CatApi
 {
+
+	/**
+	 * @var HttpClient
+	 */
+	private $httpClient;
+
+	public function __construct(HttpClient $httpClient)
+	{
+		$this->httpClient = $httpClient;
+	}
+
 	public function getRandomImage()
 	{
-		$responseXml = @file_get_contents('http://thecatapi.com/api/images/get?format=xml&type=jpg');
+		$responseXml = $this->httpClient->get('http://thecatapi.com/api/images/get?format=xml&type=jpg');
 		if (!$responseXml) {
 			// the cat API is down or something
 			return 'http://cdn.my-cool-website.com/default.jpg';
