@@ -10,9 +10,15 @@ class RealCatApi implements CatApi
 	 */
 	private $httpClient;
 
-	public function __construct(HttpClient $httpClient)
+	/**
+	 * @var ImageFromXmlResponseFactory
+	 */
+	private $imageFactory;
+
+	public function __construct(HttpClient $httpClient, ImageFromXmlResponseFactory $imageFactory)
 	{
 		$this->httpClient = $httpClient;
+		$this->imageFactory = $imageFactory;
 	}
 
 	public function getRandomImage()
@@ -25,8 +31,10 @@ class RealCatApi implements CatApi
 			return Url::fromString('http://cdn.my-cool-website.com/default.jpg');
 		}
 
-		$responseElement = new \SimpleXMLElement($responseXml);
+		$image = $this->imageFactory->fromResponse($responseXml);
 
-		return Url::fromString((string)$responseElement->data->images[0]->image->url);
+		$url = $image->url();
+
+		return Url::fromString($url);
 	}
 }
