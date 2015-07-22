@@ -15,13 +15,13 @@ class FileCache implements Cache
 		|| time() - filemtime($this->cacheFilePath) > $lifetime;
     }
 
-	public function put($url)
+	public function put(Url $url)
 	{
-		file_put_contents($this->cacheFilePath, $url);
+		file_put_contents($this->cacheFilePath, (string) $url);
 	}
 
 	public function get()
 	{
-		return file_get_contents($this->cacheFilePath);
+		return Url::fromString(file_get_contents($this->cacheFilePath));
 	}
 }
